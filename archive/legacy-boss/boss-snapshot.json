@@ -1,7 +1,0 @@
-﻿node.exe : Error: Error: locator.ariaSnapshot: Target page, context or browser has been closed
-所在位置 C:\Users\TR\AppData\Roaming\npm\openclaw.ps1:24 字符: 5
-+     & "node$exe"  "$basedir/node_modules/openclaw/openclaw.mjs" $args
-+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (Error: Error: l...has been closed:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
