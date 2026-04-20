@@ -6,7 +6,13 @@
 
 ---
 
-## 📦 包含内容
+## 🎯 用途
+
+本仓库用于在新机器上快速恢复青的工作环境，**不包含** qing-agent（求职 Agent）。
+
+---
+
+## 📦 本仓库包含
 
 ### 核心身份文件
 | 文件 | 说明 |
@@ -19,121 +25,79 @@
 | `TOOLS.md` | 本地工具配置与记忆系统用法 |
 | `HEARTBEAT.md` | 定时任务检查清单 |
 
-### 记忆系统
-| 路径 | 说明 |
-|------|------|
-| `memory/` | SQLite 主库 + 豆包向量层统一记忆系统 |
-| `.learnings/` | 错误记录 / 学习日志 / 特性请求 |
-
-### 文档
-| 路径 | 说明 |
-|------|------|
-| `docs/architecture/` | 系统架构文档 |
-| `docs/operations/` | 操作手册 |
-| `docs/history/` | 历史记录 |
-| `archive/` | 历史归档（飞书审计、数据库、文档工具等） |
-
-### 集成
-| 路径 | 说明 |
-|------|------|
-| `integrations/feishu/` | 飞书 Bot 集成（启动脚本、环境配置） |
-| `integrations/skills/summarize-qwen/` | Qwen 摘要技能 |
-
-### 脚本
+### 学习记录 ✅
 | 文件 | 说明 |
 |------|------|
-| `scripts/request_tracker.py` | 请求追踪脚本 |
-| `scripts/README.md` | 脚本说明 |
+| `.learnings/ERRORS.md` | 错误记录（26 条教训） |
+| `.learnings/LEARNINGS.md` | 学习日志 |
+| `.learnings/FEATURE_REQUESTS.md` | 特性请求 |
+
+### 记忆系统 ✅
+| 路径 | 说明 |
+|------|------|
+| `memory/engine/database/optimized_memory.db` | SQLite 主库（3MB） |
+| `memory/engine/database/memory_faiss.index` | FAISS 向量索引（8KB） |
+| `memory/engine/episodic/*.jsonl` | 每日事件日志（03-27 ~ 03-30） |
+| `memory/engine/memory_search.py` | 统一检索入口 |
+| `memory/engine/unified_memory.py` | 统一写入器 |
+| `memory/engine/vector_memory.py` | 向量层管理 |
+
+### 飞书集成
+| 路径 | 说明 |
+|------|------|
+| `integrations/feishu/.env.example` | 环境变量模板 |
+| `integrations/feishu/README.md` | 集成说明 |
+| `integrations/feishu/check_config.py` | 配置检查脚本 |
+| `integrations/feishu/start.bat` | 启动脚本 |
+
+### 技能
+| 路径 | 说明 |
+|------|------|
+| `integrations/skills/summarize-qwen/SKILL.md` | Qwen 摘要技能 |
+
+### 架构文档
+| 路径 | 说明 |
+|------|------|
+| `docs/architecture/` | 目录角色、记忆架构等 |
+| `docs/operations/feishu/` | 飞书集成操作手册 |
+| `docs/operations/framework-operations-v1.md` | 框架操作说明 |
 
 ---
 
-## 🚫 不包含（排除项）
+## 🚫 不包含
 
-- **`qing-agent/`** — 求职 Agent 专用目录（含真实投递数据、平台凭证）
-- **`node_modules/`** — npm 包，新机器运行 `npm install` 即可
+- **`qing-agent/`** — 求职 Agent（含平台凭证和投递数据），单独管理
+- **`node_modules/`** — npm 包，运行 `npm install` 安装
 - **`.openclaw/`** — OpenClaw 系统配置（机器相关，重新配对）
-- **`CLAWD.md`** — 工作空间状态文件（自动生成）
-- **`tmp_zhilian_restore.py`** — 临时恢复脚本（Job Agent 残留）
+- **机器相关配置** — `.env`（飞书凭证等），根据 `.env.example` 重新填写
 
 ---
 
-## 🖥️ 新机器初始化步骤
+## 🖥️ 新机器初始化
 
-### 1. 安装 OpenClaw
 ```bash
-npm install -g openclaw
-openclaw gateway install
-```
+# 1. 克隆仓库到 workspace
+git clone https://github.com/Ching-W0121/Qing-OpenClaw.git C:\Users\TR\.openclaw\workspace
 
-### 2. 克隆本仓库到工作空间
-```bash
-# 在新机器的 workspace 目录下
-git clone https://github.com/Ching-W0121/Qing-OpenClaw.git .
-```
-
-### 3. 安装依赖
-```bash
+# 2. 安装依赖
 npm install
-```
 
-### 4. 配置飞书集成（如需）
-```bash
-# 复制并编辑环境变量
+# 3. 初始化 OpenClaw（首次）
+openclaw gateway install
+
+# 4. 恢复飞书配置
 cp integrations/feishu/.env.example integrations/feishu/.env
-# 填写 App ID / App Secret / Bot Token
-```
+# 编辑 integrations/feishu/.env，填写 App ID / App Secret / Bot Token
 
-### 5. 初始化记忆系统
-```bash
-python memory/memory_search.py --help
-# 验证 SQLite 主库可用
-```
-
-### 6. 配置 OpenClaw 并重启
-```bash
+# 5. 重启 OpenClaw
 openclaw gateway restart
 ```
 
-### 7. 恢复身份（重要！）
-新机器首次启动后，编辑以下文件确认机器名称一致：
-- `IDENTITY.md` — AI 身份
-- `USER.md` — 用户信息
-- `TOOLS.md` — 检查飞书配置是否需要更新
-
 ---
 
-## 🔑 重要配置（需重新在新机器填写）
+## 📅 提交历史
 
-### 飞书发图配置（TOOLS.md）
-```
-App ID: cli_a93ba86cdfba5bcc
-用户 open_id: 待获取（在飞书开发者后台查看）
-```
-
-### 豆包向量模型配置（TOOLS.md）
-```
-Base URL: https://ark.cn-beijing.volces.com/api/v3
-API Key: fddc1778-d04c-403e-8327-ab68ec1ec9dd
-模型: doubao-embedding-vision-251215
-```
-
----
-
-## 📝 迁移备注
-
-### 求职 Agent 独立迁移
-qing-agent 目录包含真实的平台凭证和投递数据，**不**同步到 GitHub。如需在新机器使用：
-1. 在新机器上单独部署 qing-agent
-2. 重新配置平台登录凭证
-3. 数据库文件需单独拷贝（`qing-agent/data/qing_agent.db`）
-
-### 本次排除的临时文件
-- `tmp_zhilian_restore.py` — 智联恢复脚本，迁移当天已确认残留，已排除
-
----
-
-## 📅 迁移记录
-
-| 日期 | 内容 |
-|------|------|
-| 2026-04-20 | 首次迁移，完整同步除 qing-agent 外的全部 workspace |
+| Commit | 说明 |
+|--------|------|
+| `59d3bb4` | 清理 qing-agent 和旧数据（删除 151 个文件，34 万行） |
+| `3b37b4d` | 初始迁移 |
