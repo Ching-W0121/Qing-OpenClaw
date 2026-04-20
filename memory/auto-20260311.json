@@ -1,0 +1,24 @@
+{
+  "date": 20260311,
+  "type": 1,
+  "events": [
+    {
+      "title": "Git 提交：docs: 补充 memory/README.md 使用指南",
+      "status": 2,
+      "timestamp": "2026-03-11 15:51:52 +0800",
+      "tags": ["git", "auto-capture"],
+      "files_added": [],
+      "files_modified": [],
+      "metrics": {
+        "commit_hash": "87864298f784e2abda506aa5eaf81127be64e91c",
+        "files_changed": 5,
+        "lines_added": "469",
+        "lines_removed": "295"
+      },
+      "notes": "自动捕获的 Git 提交"
+    }
+  ],
+  "progress": {},
+  "summary": "Git 提交：docs: 补充 memory/README.md 使用指南",
+  "created_at": "2026-03-11T15:51:52+08:00"
+}

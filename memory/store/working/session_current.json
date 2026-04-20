@@ -1,0 +1,36 @@
+{
+  "session_id": "agent:job:vectorbrain-stage",
+  "started_at": "2026-03-27T15:21:33.951956+08:00",
+  "current_goal": "已完成并即时记录：VectorBrain stage 完成: zhilian/品牌策划",
+  "recent_messages": [
+    {
+      "role": "system",
+      "content": "zhilian/品牌策划 阶段完成，关键词 ['品牌策划', '品牌主管', '品牌专员', '营销策划']，apply_results=0。",
+      "timestamp": "2026-03-27T15:21:33.951956+08:00"
+    },
+    {
+      "role": "system",
+      "type": "job_agent_round",
+      "title": "VectorBrain stage 完成: zhilian/品牌策划",
+      "content": "zhilian/品牌策划 阶段完成，关键词 ['品牌策划', '品牌主管', '品牌专员', '营销策划']，apply_results=0。",
+      "timestamp": "2026-03-27T15:21:33.951956+08:00",
+      "source": "memory_bridge"
+    }
+  ],
+  "active_entities": [
+    "jobs",
+    "vectorbrain",
+    "stage",
+    "zhilian",
+    "品牌策划",
+    "critical",
+    "realtime-memory"
+  ],
+  "scratchpad": "{\n  \"platform\": \"zhilian\",\n  \"target\": \"品牌策划\",\n  \"keywords\": [\n    \"品牌策划\",\n    \"品牌主管\",\n    \"品牌专员\",\n    \"营销策划\"\n  ],\n  \"result_count\": 4,\n  \"unique_recommendations\": 8,\n  \"apply_candidate_count\": 0,\n  \"apply_results\": [],\n  \"report_path\": \"C:\\\\Users\\\\TR\\\\.openclaw\\\\workspace\\\\qing-agent\\\\vectorbrain\\\\stage_zhilian_品牌策划_20260327_152133.json\",\n  \"finished_at\": \"2026-03-27T15:21:33.951956+08:00\"\n}",
+  "last_updated": "2026-03-27T15:21:33.951956+08:00",
+  "memory_guard": {
+    "critical_task_recorded": true,
+    "recorded_at": "2026-03-27T15:21:33.951956+08:00",
+    "title": "VectorBrain stage 完成: zhilian/品牌策划"
+  }
+}

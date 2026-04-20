@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+把 .learnings/ 与 memory-cleanup-backup-* 中的记忆型文档统一纳入记忆库。
+只写记忆层 SQLite + FAISS，不改原文件。
+"""
+
+import json
+import sqlite3
+import time
+from pathlib import Path
+from datetime import datetime
+
+WORKSPACE = Path(r'C:\Users\TR\.openclaw\workspace')
+MEMORY_DB = WORKSPACE / 'memory' / 'database' / 'optimized_memory.db'
+TEXT_EXTS = {'.md', '.txt', '.json', '.jsonl'}
+MAX_CHARS = 1200
+OVERLAP = 120
+
+
+def db_connect():
+    conn = sqlite3.connect(str(MEMORY_DB), timeout=60)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def chunk_text(text: str):
+    text = (text or '').strip()
+    if not text:
+        return []
+    paras = [p.strip() for p in text.replace('\r\n', '\n').split('\n\n') if p.strip()]
+    chunks, current = [], ''
+    for para in paras:
+        if len(current) + len(para) + 2 <= MAX_CHARS:
+            current = f"{current}\n\n{para}".strip()
+        else:
+            if current:
+                chunks.append(current)
+            current = para
+    if current:
+        chunks.append(current)
+    final = []
+    for chunk in chunks:
+        if len(chunk) <= MAX_CHARS:
+            final.append(chunk)
+            continue
+        start = 0
+        while start < len(chunk):
+            end = min(start + MAX_CHARS, len(chunk))
+            final.append(chunk[start:end])
+            if end >= len(chunk):
+                break
+            start = max(0, end - OVERLAP)
+    return final
+
+
+def upsert_knowledge(key: str, category: str, value: str, retries: int = 8, delay: float = 1.0):
+    last_err = None
+    for _ in range(retries):
+        try:
+            conn = db_connect()
+            cur = conn.cursor()
+            exists = cur.execute('SELECT 1 FROM knowledge WHERE key = ?', (key,)).fetchone()
+            cur.execute(
+                '''INSERT OR REPLACE INTO knowledge (key, category, value, confidence, updated_at)
+                   VALUES (?, ?, ?, ?, ?)''',
+                (key, category, value, 0.78, datetime.utcnow().isoformat() + 'Z')
+            )
+            conn.commit()
+            conn.close()
+            return bool(exists)
+        except sqlite3.OperationalError as e:
+            last_err = e
+            if 'locked' not in str(e).lower():
+                raise
+            time.sleep(delay)
+    raise last_err
+
+
+def iter_targets():
+    # .learnings/
+    learn_dir = WORKSPACE / '.learnings'
+    if learn_dir.exists():
+        for p in learn_dir.rglob('*'):
+            if p.is_file() and p.suffix.lower() in TEXT_EXTS:
+                yield 'learnings_file', p
+
+    # memory-cleanup-backup-* 文档
+    for backup_dir in WORKSPACE.glob('memory-cleanup-backup-*'):
+        if not backup_dir.is_dir():
+            continue
+        for p in backup_dir.rglob('*'):
+            if not p.is_file() or p.suffix.lower() not in TEXT_EXTS:
+                continue
+            rel = p.relative_to(backup_dir).as_posix().lower()
+            if 'database/' in rel or '__pycache__/' in rel:
+                continue
+            yield 'backup_memory_file', p
+
+
+def main():
+    import sys
+    sys.path.insert(0, str(WORKSPACE / 'memory'))
+    from vector_memory import upsert_vector
+
+    imported_files = 0
+    imported_chunks = 0
+    updated_keys = 0
+    sample_files = []
+
+    for category, path in iter_targets():
+        rel = path.relative_to(WORKSPACE).as_posix()
+        text = path.read_text(encoding='utf-8', errors='replace')
+        chunks = chunk_text(text)
+        if not chunks:
+            continue
+        imported_files += 1
+        if len(sample_files) < 30:
+            sample_files.append(rel)
+        for i, chunk in enumerate(chunks, start=1):
+            key = f'{category}.{rel}#chunk{i}'
+            value = f'FILE: {rel}\nCHUNK: {i}/{len(chunks)}\n\n{chunk}'
+            existed = upsert_knowledge(key, category, value)
+            if existed:
+                updated_keys += 1
+            imported_chunks += 1
+            try:
+                upsert_vector('knowledge', key, value)
+            except Exception:
+                pass
+
+    print(json.dumps({
+        'imported_files': imported_files,
+        'imported_chunks': imported_chunks,
+        'updated_keys': updated_keys,
+        'sample_files': sample_files,
+        'truncated': max(0, imported_files - len(sample_files))
+    }, ensure_ascii=False, indent=2))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,136 @@
+{
+  "name": "BOSS 直聘自动投递配置",
+  "version": "1.0",
+  "created": "2026-03-05",
+  
+  "platform": {
+    "name": "BOSS 直聘",
+    "url": "https://www.zhipin.com",
+    "relayProfile": "chrome"
+  },
+  
+  "search": {
+    "keywords": [
+      "品牌策划",
+      "视觉设计",
+      "品牌设计",
+      "品牌宣传",
+      "品牌视觉"
+    ],
+    "location": {
+      "required": "深圳",
+      "exclude": ["宝安"]
+    },
+    "salary": {
+      "min": 8000
+    },
+    "excludeFunctions": [
+      "行政",
+      "销售",
+      "客服",
+      "人事"
+    ]
+  },
+  
+  "matching": {
+    "threshold": 70,
+    "categories": {
+      "策划": {
+        "keywords": [
+          "品牌战略",
+          "品牌定位",
+          "营销策划",
+          "活动策划",
+          "内容营销",
+          "社媒运营",
+          "品牌故事",
+          "slogan",
+          "文案",
+          "竞品分析",
+          "市场趋势"
+        ],
+        "titleKeywords": [
+          "品牌策划",
+          "品牌宣传",
+          "品牌管理"
+        ]
+      },
+      "视觉": {
+        "keywords": [
+          "LOGO",
+          "VI 系统",
+          "标准字",
+          "标准色",
+          "IP 形象",
+          "视觉规范",
+          "海报",
+          "画册",
+          "包装",
+          "Banner",
+          "详情页",
+          "官网",
+          "电商",
+          "短视频"
+        ],
+        "titleKeywords": [
+          "视觉设计",
+          "品牌视觉",
+          "品牌设计"
+        ]
+      }
+    },
+    "industries": [
+      "广告",
+      "策划",
+      "品牌咨询",
+      "营销服务",
+      "快消",
+      "文旅",
+      "互联网",
+      "科技"
+    ]
+  },
+  
+  "execution": {
+    "dailyLimit": 50,
+    "randomDelay": {
+      "min": 5,
+      "max": 20
+    },
+    "batchSize": {
+      "min": 3,
+      "max": 5
+    },
+    "longRest": {
+      "afterBatch": true,
+      "duration": {
+        "min": 30,
+        "max": 60
+      }
+    }
+  },
+  
+  "logging": {
+    "enabled": true,
+    "path": "C:\\Users\\TR\\.openclaw\\workspace\\memory\\boss-log.json",
+    "trackRejects": true,
+    "rejectReasons": [
+      "薪资太低",
+      "地点不符",
+      "行业不匹配",
+      "岗位不匹配",
+      "匹配度不足"
+    ]
+  },
+  
+  "reporting": {
+    "enabled": true,
+    "format": "summary",
+    "metrics": [
+      "scannedCount",
+      "appliedCount",
+      "avgMatchScore",
+      "rejectReasons"
+    ]
+  }
+}

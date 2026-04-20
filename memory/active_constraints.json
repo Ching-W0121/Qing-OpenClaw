@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "updated_at": "2026-03-26T14:02:00+08:00",
+  "constraints": [
+    {
+      "id": "no_external_without_probe",
+      "description": "外部协作/浏览器/Gemini/ACP/gateway 类任务未完成 probe 不得执行",
+      "match_any": ["browser", "gemini", "chatgpt", "acp", "gateway", "浏览器", "外部"],
+      "requires": ["valid_probe_token"]
+    },
+    {
+      "id": "no_slow_task_in_main",
+      "description": "慢任务不得在主会话直接执行",
+      "match_any": ["scan", "crawl", "collect", "scrape", "整轮", "全量", "扫描", "抓取", "gemini", "chatgpt", "浏览器"],
+      "requires": ["is_subsession"]
+    }
+  ]
+}

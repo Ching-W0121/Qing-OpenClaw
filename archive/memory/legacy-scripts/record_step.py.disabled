@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+工作步骤级实时记录器。
+用于把一个任务过程拆成 step 事件，强制进入记忆层。
+"""
+
+import argparse
+import json
+import sys
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+
+from unified_memory import append_episode, append_working_event  # type: ignore
+
+CN_TZ = timezone(timedelta(hours=8))
+
+
+def now_iso():
+    return datetime.now(CN_TZ).isoformat()
+
+
+def parse_args():
+    p = argparse.ArgumentParser()
+    p.add_argument('--task', required=True, help='任务名')
+    p.add_argument('--step', required=True, help='步骤名')
+    p.add_argument('--status', default='in_progress', help='started|in_progress|done|failed')
+    p.add_argument('--detail', default='', help='步骤详情')
+    p.add_argument('--tags', default='')
+    p.add_argument('--session-id', default='agent:main:main')
+    p.add_argument('--channel', default='local')
+    return p.parse_args()
+
+
+def main():
+    args = parse_args()
+    ts = now_iso()
+    tags = [t.strip() for t in args.tags.split(',') if t.strip()]
+    title = f"{args.task} / {args.step}"
+    content = f"[step:{args.status}] {title}"
+    if args.detail:
+        content += f"\n\n{args.detail}"
+
+    record = append_episode(
+        content=content,
+        timestamp=ts,
+        session_id=args.session_id,
+        channel=args.channel,
+        event_type='task_step',
+        metadata={
+            'task': args.task,
+            'step': args.step,
+            'status': args.status,
+            'detail': args.detail,
+            'tags': tags,
+            'recorded_at': ts,
+            'source': 'record_step',
+        }
+    )
+
+    append_working_event(
+        {
+            'role': 'system',
+            'type': 'task_step',
+            'task': args.task,
+            'step': args.step,
+            'status': args.status,
+            'content': content,
+            'timestamp': ts,
+            'source': 'record_step',
+        },
+        session_id=args.session_id,
+        current_goal=f'{args.task} / {args.step} / {args.status}',
+        active_entities=tags,
+        scratchpad=args.detail,
+    )
+
+    print(json.dumps(record, ensure_ascii=False, indent=2))
+
+
+if __name__ == '__main__':
+    main()

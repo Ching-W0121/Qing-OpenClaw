@@ -1,0 +1,24 @@
+{
+  "date": 20260325,
+  "type": 1,
+  "events": [
+    {
+      "title": "Git 提交：🧠 auto-sync: 2026-03-25 11:03",
+      "status": 2,
+      "timestamp": "2026-03-25 11:03:50 +0800",
+      "tags": ["git", "auto-capture"],
+      "files_added": [],
+      "files_modified": [],
+      "metrics": {
+        "commit_hash": "222f13795353fe215accb2eba1772ce6118a7d17",
+        "files_changed": 5,
+        "lines_added": "16",
+        "lines_removed": "20"
+      },
+      "notes": "自动捕获的 Git 提交"
+    }
+  ],
+  "progress": {},
+  "summary": "Git 提交：🧠 auto-sync: 2026-03-25 11:03",
+  "created_at": "2026-03-25T11:03:51+08:00"
+}

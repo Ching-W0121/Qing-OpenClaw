@@ -1,0 +1,38 @@
+# 编译产物
+*.exe
+*.o
+*.obj
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.pdb
+
+# 数据库文件
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# 临时文件
+*.tmp
+*.log
+*.bak
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 压缩包
+*.zip
+*.tar.gz
+
+# 源码目录（已解压）
+sqlite-amalgamation-*/

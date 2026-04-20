@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+轻量级实时记忆记录器：
+任何关键事件/任务步骤都可以通过它写入主记忆库 + working + FAISS。
+
+用法：
+python memory/record_event.py --type operation --title "浏览器打开 Gemini" --content "已打开 Gemini 并定位到 SQLite 记忆系统聊天" --tags memory,browser,gemini
+"""
+
+import argparse
+import json
+import sys
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+
+from unified_memory import append_episode, append_working_event
+
+CN_TZ = timezone(timedelta(hours=8))
+
+
+def now_iso():
+    return datetime.now(CN_TZ).isoformat()
+
+
+def parse_args():
+    p = argparse.ArgumentParser()
+    p.add_argument('--type', default='operation')
+    p.add_argument('--title', required=True)
+    p.add_argument('--content', required=True)
+    p.add_argument('--tags', default='')
+    p.add_argument('--session-id', default='agent:main:main')
+    p.add_argument('--channel', default='local')
+    return p.parse_args()
+
+
+def main():
+    args = parse_args()
+    ts = now_iso()
+    tags = [t.strip() for t in args.tags.split(',') if t.strip()]
+    content = f"[{args.type}] {args.title}\n\n{args.content}"
+
+    record = append_episode(
+        content=content,
+        timestamp=ts,
+        session_id=args.session_id,
+        channel=args.channel,
+        event_type=args.type,
+        metadata={
+            'title': args.title,
+            'tags': tags,
+            'recorded_at': ts,
+            'source': 'record_event',
+        }
+    )
+
+    append_working_event(
+        {
+            'role': 'system',
+            'type': args.type,
+            'title': args.title,
+            'content': args.content,
+            'timestamp': ts,
+            'source': 'record_event',
+        },
+        session_id=args.session_id,
+        current_goal=f'实时记录中：{args.title}',
+        active_entities=tags,
+        scratchpad=args.content,
+    )
+
+    print(json.dumps(record, ensure_ascii=False, indent=2))
+
+
+if __name__ == '__main__':
+    main()

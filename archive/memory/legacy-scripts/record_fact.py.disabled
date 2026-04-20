@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+记录可回查的事实型记忆：
+- 写 knowledge 表
+- 同步 FAISS
+- 可用于“昨天问了什么 / 当时答案是什么 / 某个事实是什么”这类检索
+
+用法：
+python memory/record_fact.py --key weather.2026-03-18 --value "深圳 多云 20-28℃" --category weather --question "今天是什么天气" --answer "今天深圳多云，20-28℃"
+"""
+
+import argparse
+import json
+import sqlite3
+import sys
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+
+from unified_memory import ensure_tables, db_connect, append_episode, append_working_event  # type: ignore
+from vector_memory import upsert_vector  # type: ignore
+
+CN_TZ = timezone(timedelta(hours=8))
+
+
+def now_iso():
+    return datetime.now(CN_TZ).isoformat()
+
+
+def parse_args():
+    p = argparse.ArgumentParser()
+    p.add_argument('--key', required=True)
+    p.add_argument('--value', required=True)
+    p.add_argument('--category', default='fact')
+    p.add_argument('--question', default='')
+    p.add_argument('--answer', default='')
+    p.add_argument('--tags', default='')
+    p.add_argument('--session-id', default='agent:main:main')
+    p.add_argument('--channel', default='local')
+    return p.parse_args()
+
+
+def main():
+    args = parse_args()
+    ensure_tables()
+    ts = now_iso()
+    tags = [t.strip() for t in args.tags.split(',') if t.strip()]
+
+    conn = db_connect()
+    cur = conn.cursor()
+    cur.execute(
+        '''INSERT OR REPLACE INTO knowledge (key, category, value, confidence, updated_at)
+           VALUES (?, ?, ?, ?, ?)''',
+        (args.key, args.category, args.value, 0.9, ts)
+    )
+    conn.commit()
+    conn.close()
+
+    vector_text = f"{args.key} {args.value}"
+    if args.question:
+        vector_text += f"\n问题: {args.question}"
+    if args.answer:
+        vector_text += f"\n回答: {args.answer}"
+    upsert_vector('knowledge', args.key, vector_text)
+
+    content = f"[fact] {args.key}\n\n值：{args.value}"
+    if args.question:
+        content += f"\n\n问题：{args.question}"
+    if args.answer:
+        content += f"\n回答：{args.answer}"
+
+    episode = append_episode(
+        content=content,
+        timestamp=ts,
+        session_id=args.session_id,
+        channel=args.channel,
+        event_type='fact_recorded',
+        metadata={
+            'title': f'事实记录: {args.key}',
+            'key': args.key,
+            'category': args.category,
+            'value': args.value,
+            'question': args.question,
+            'answer': args.answer,
+            'tags': tags,
+            'recorded_at': ts,
+        }
+    )
+
+    append_working_event(
+        {
+            'role': 'system',
+            'type': 'fact_recorded',
+            'key': args.key,
+            'category': args.category,
+            'value': args.value,
+            'question': args.question,
+            'answer': args.answer,
+            'content': content,
+            'timestamp': ts,
+            'source': 'record_fact',
+        },
+        session_id=args.session_id,
+        current_goal=f'事实已记录：{args.key}',
+        active_entities=tags,
+        scratchpad=args.answer or args.value,
+    )
+
+    print(json.dumps({'ok': True, 'key': args.key, 'episode_id': episode.get('db_id') or episode.get('id')}, ensure_ascii=False, indent=2))
+
+
+if __name__ == '__main__':
+    main()

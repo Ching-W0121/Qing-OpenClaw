@@ -1,0 +1,157 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Import recent memories into unified memory system (SQLite + FAISS).
+替换旧的 MemoryVaultFAISS 路径，统一走当前主记忆链。
+"""
+
+import json
+import sqlite3
+import time
+from pathlib import Path
+from datetime import datetime
+import sys
+
+ROOT = Path(__file__).resolve().parent
+WORKSPACE = ROOT.parent
+DB_PATH = ROOT / 'database' / 'optimized_memory.db'
+sys.path.insert(0, str(ROOT))
+
+from vector_memory import upsert_vector  # type: ignore
+
+SOURCES = [
+    (ROOT / '2026-03-16.md', 'recent_memory_file'),
+    (ROOT / 'episodic' / '2026-03-16.jsonl', 'recent_memory_file'),
+    (ROOT / 'episodic' / '2026-03-17.jsonl', 'recent_memory_file'),
+]
+MAX_CHARS = 1200
+OVERLAP = 120
+
+
+def db_connect():
+    conn = sqlite3.connect(str(DB_PATH), timeout=60)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def chunk_text(text: str):
+    text = (text or '').strip()
+    if not text:
+        return []
+    paras = [p.strip() for p in text.replace('\r\n', '\n').split('\n\n') if p.strip()]
+    chunks, current = [], ''
+    for para in paras:
+        if len(current) + len(para) + 2 <= MAX_CHARS:
+            current = f"{current}\n\n{para}".strip()
+        else:
+            if current:
+                chunks.append(current)
+            current = para
+    if current:
+        chunks.append(current)
+    final = []
+    for chunk in chunks:
+        if len(chunk) <= MAX_CHARS:
+            final.append(chunk)
+            continue
+        start = 0
+        while start < len(chunk):
+            end = min(start + MAX_CHARS, len(chunk))
+            final.append(chunk[start:end])
+            if end >= len(chunk):
+                break
+            start = max(0, end - OVERLAP)
+    return final
+
+
+def upsert_knowledge(key: str, category: str, value: str, retries: int = 8, delay: float = 1.0):
+    last_err = None
+    for _ in range(retries):
+        try:
+            conn = db_connect()
+            cur = conn.cursor()
+            exists = cur.execute('SELECT 1 FROM knowledge WHERE key = ?', (key,)).fetchone()
+            cur.execute(
+                '''INSERT OR REPLACE INTO knowledge (key, category, value, confidence, updated_at)
+                   VALUES (?, ?, ?, ?, ?)''',
+                (key, category, value, 0.72, datetime.utcnow().isoformat() + 'Z')
+            )
+            conn.commit()
+            conn.close()
+            return bool(exists)
+        except sqlite3.OperationalError as e:
+            last_err = e
+            if 'locked' not in str(e).lower():
+                raise
+            time.sleep(delay)
+    raise last_err
+
+
+def import_markdown(path: Path):
+    if not path.exists():
+        return 0, 0
+    text = path.read_text(encoding='utf-8', errors='replace')
+    chunks = chunk_text(text)
+    inserted = 0
+    updated = 0
+    for i, chunk in enumerate(chunks, start=1):
+        key = f'recent_memory_file.{path.relative_to(ROOT).as_posix()}#chunk{i}'
+        value = f'FILE: {path.relative_to(ROOT).as_posix()}\nCHUNK: {i}/{len(chunks)}\n\n{chunk}'
+        existed = upsert_knowledge(key, 'recent_memory_file', value)
+        if existed:
+            updated += 1
+        else:
+            inserted += 1
+        try:
+            upsert_vector('knowledge', key, value)
+        except Exception:
+            pass
+    return inserted, updated
+
+
+def import_jsonl(path: Path):
+    if not path.exists():
+        return 0, 0
+    inserted = 0
+    updated = 0
+    with path.open('r', encoding='utf-8', errors='replace') as f:
+        lines = [line.strip() for line in f if line.strip()]
+    for idx, line in enumerate(lines, start=1):
+        try:
+            rec = json.loads(line)
+        except Exception:
+            continue
+        content = rec.get('content') or ''
+        if not content.strip():
+            continue
+        key = f'recent_memory_file.{path.relative_to(ROOT).as_posix()}#line{idx}'
+        value = f'FILE: {path.relative_to(ROOT).as_posix()}\nLINE: {idx}\n\n{content}'
+        existed = upsert_knowledge(key, 'recent_memory_file', value)
+        if existed:
+            updated += 1
+        else:
+            inserted += 1
+        try:
+            upsert_vector('knowledge', key, value)
+        except Exception:
+            pass
+    return inserted, updated
+
+
+def main():
+    total_inserted = 0
+    total_updated = 0
+    details = []
+    for path, _kind in SOURCES:
+        if path.suffix.lower() == '.md':
+            inserted, updated = import_markdown(path)
+        else:
+            inserted, updated = import_jsonl(path)
+        total_inserted += inserted
+        total_updated += updated
+        details.append({'file': path.name, 'inserted': inserted, 'updated': updated})
+    print(json.dumps({'ok': True, 'inserted': total_inserted, 'updated': total_updated, 'details': details}, ensure_ascii=False, indent=2))
+
+
+if __name__ == '__main__':
+    main()

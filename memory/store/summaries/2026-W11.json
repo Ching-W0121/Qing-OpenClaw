@@ -1,0 +1,91 @@
+{
+  "week": "2026-W11",
+  "period": "2026-03-12 to 2026-03-18",
+  "created_at": "2026-03-15T06:54:00+08:00",
+  "summary": "求职平台真实测试 + 浏览器自动化修复 + 记忆强制系统建立",
+  "key_events": [
+    {
+      "date": "2026-03-12",
+      "event": "智联招聘真实投递测试",
+      "description": "成功投递 8 个职位（匹配度≥75%，薪资≥8K，非宝安），验证 5 维评分系统有效性",
+      "progress": 1.0
+    },
+    {
+      "date": "2026-03-13",
+      "event": "前程无忧自动化测试部分失败",
+      "description": "5 个职位仅成功 1 个（冠旭电子），DOM ref 失效问题暴露",
+      "progress": 0.2
+    },
+    {
+      "date": "2026-03-14",
+      "event": "前程无忧修复（GPT 咨询）",
+      "description": "React SPA DOM 重新渲染问题分析，实施 3 条关键规则：点击后重新 snapshot、不复用旧 ref、列表页必刷新",
+      "progress": 1.0
+    },
+    {
+      "date": "2026-03-14",
+      "event": "前程无忧真实测试成功",
+      "description": "修复后 5/5 成功（100% 成功率），累计投递 13 个职位",
+      "progress": 1.0
+    },
+    {
+      "date": "2026-03-14",
+      "event": "记忆强制系统建立",
+      "description": "创建 memory_guard.py、browser_automation_guard.md、failure_tracker.md，实施操作前强制检索记忆规则",
+      "progress": 1.0
+    },
+    {
+      "date": "2026-03-14",
+      "event": "PostgreSQL 数据库配置",
+      "description": "PostgreSQL 16.13 安装，数据库 qing_jobs_db 创建，5 张表创建（jobs, users, matches, applications）",
+      "progress": 1.0
+    },
+    {
+      "date": "2026-03-15",
+      "event": "FAISS + SQLite 双轨架构实现",
+      "description": "实现向量检索 + 结构化存储双轨架构，但出现'代码写完≠功能完成'错误",
+      "progress": 0.4
+    },
+    {
+      "date": "2026-03-15",
+      "event": "记忆系统维护",
+      "description": "修复 reflection-worker.js toLowerCase 错误（添加 null 检查），记忆蒸馏和反思系统正常运行",
+      "progress": 1.0
+    }
+  ],
+  "metrics": {
+    "total_applications": 13,
+    "platforms_tested": 3,
+    "success_rate_zhilian": 1.0,
+    "success_rate_51job": 1.0,
+    "success_rate_boss": 0,
+    "memory_files_created": 16,
+    "learnings_logged": 14,
+    "errors_logged": 10,
+    "github_syncs": 5,
+    "reflection_runs": 3
+  },
+  "lessons_learned": [
+    "实事求是原则 - 知道就是知道，不知道就是不知道，不编造数据",
+    "3 次法则 - 同一操作失败 3 次必须换方法，不是死磕",
+    "React SPA 自动化 - 每次操作后重新 snapshot，不复用 ref",
+    "失败后强制检索记忆 - 避免重复同样的错误",
+    "代码写完≠功能完成 - 必须运行测试、数据迁移、系统集成、验证功能才能说完成",
+    "Git push 失败先检查防火墙（Windows Defender）",
+    "搜索范围必须包括 workspace 根目录所有文件，不能只查数据库和 memory/"
+  ],
+  "critical_errors": [
+    "ERR-20260314-001: 数据编造错误（重蹈 2026-03-12 覆辙）",
+    "ERR-20260315-001: 不验证就假设成功",
+    "ERR-20260315-002: 不检索记忆就盲目操作导致死循环",
+    "LRN-20260315-001: 代码写完≠功能完成"
+  ],
+  "next_week_priorities": [
+    "拉勾网真实数据测试",
+    "实现用户反馈追踪（基础版）",
+    "配置 GitHub 记忆自动同步（Viking 核心功能）",
+    "PostgreSQL 迁移（从 SQLite）",
+    "Celery 任务队列集成",
+    "Web 界面设计（Streamlit）"
+  ]
+}

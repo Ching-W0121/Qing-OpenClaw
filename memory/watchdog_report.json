@@ -1,0 +1,128 @@
+{
+  "generated_at": "2026-03-31T09:11:26.208732",
+  "task": null,
+  "preflight": {
+    "ok": true,
+    "marker": {
+      "checked": true,
+      "task": "Run watchdog audit for current workspace memory/reflection system",
+      "timestamp": "2026-03-30T16:54:00.113583",
+      "recent_episode_count_180m": 0
+    }
+  },
+  "legacy_paths": {
+    "ok": false,
+    "missing_disabled_files": [
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\import_all_text_memories.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\import_learnings_and_backups.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\import_recent_memories.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\import_scattered_memories.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\memory_migration.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\memory_rechunk.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\migrate_to_database.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\migrate_v2_to_v3.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\load_context.cmd.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\record_event.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\record_fact.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\record_step.py.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\auto-record.js.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\episodic-writer.js.disabled",
+      "C:\\Users\\TR\\.openclaw\\workspace\\memory\\memory_guard.py.disabled"
+    ]
+  },
+  "working_view": {
+    "ok": true,
+    "session_id": "agent:job:vectorbrain-stage",
+    "last_updated": "2026-03-27T15:21:33.951956+08:00",
+    "current_goal": "已完成并即时记录：VectorBrain stage 完成: zhilian/品牌策划"
+  },
+  "recent_task_titles": [
+    {
+      "timestamp": "2026-03-27T15:21:33.951956+08:00",
+      "title": "VectorBrain stage 完成: zhilian/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T15:14:30.448918+08:00",
+      "title": "VectorBrain stage 完成: 51job/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T14:41:44.788256+08:00",
+      "title": "VectorBrain stage 完成: 51job/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T14:39:51.360658+08:00",
+      "title": "VectorBrain stage 完成: zhilian/品牌设计"
+    },
+    {
+      "timestamp": "2026-03-27T14:37:51.580937+08:00",
+      "title": "VectorBrain stage 完成: zhilian/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T14:37:51.255766+08:00",
+      "title": "VectorBrain stage 完成: zhilian/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T14:37:50.299158+08:00",
+      "title": "VectorBrain stage 完成: zhilian/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T14:37:48.391490+08:00",
+      "title": "VectorBrain stage 完成: zhilian/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T14:36:25.808564+08:00",
+      "title": "VectorBrain stage 完成: liepin/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T14:35:05.603499+08:00",
+      "title": "VectorBrain stage 完成: 51job/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T14:34:52.944932+08:00",
+      "title": "VectorBrain stage 完成: 51job/品牌设计"
+    },
+    {
+      "timestamp": "2026-03-27T14:34:14.484998+08:00",
+      "title": "VectorBrain stage 完成: 51job/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T14:32:37.452021+08:00",
+      "title": "VectorBrain stage 完成: 51job/品牌策划"
+    },
+    {
+      "timestamp": "2026-03-27T11:20:44.658550+08:00",
+      "title": "二次深清：删除备份归档、workspace 缓存与旧报告引用"
+    },
+    {
+      "timestamp": "2026-03-27T11:17:44.204948+08:00",
+      "title": "清理求职 Agent 旧链路代码/缓存/产物并收口主链"
+    },
+    {
+      "timestamp": "2026-03-26T23:59:00+08:00",
+      "title": "2026-03-26 durable memory flush（watchdog backfill）"
+    },
+    {
+      "timestamp": "2026-03-27T09:06:55.065980+08:00",
+      "title": "run-memory-distillation 2026-03-27 09:06"
+    },
+    {
+      "timestamp": "2026-03-26T09:57:49.113787+08:00",
+      "title": "重跑智联 1-10 页候选分析（修复后）"
+    },
+    {
+      "timestamp": "2026-03-26T09:49:44.815329+08:00",
+      "title": "修复智联搜索 4-6 页抓取断点"
+    },
+    {
+      "timestamp": "2026-03-26T09:41:16.941650+08:00",
+      "title": "修复智联 candidate pipeline 展平逻辑误判"
+    }
+  ],
+  "recent_episode_count_180m": 0,
+  "risk_signals": [],
+  "auto_backfill": {
+    "ok": false,
+    "reason": "no_daily_flush_markdown"
+  },
+  "ok": false
+}

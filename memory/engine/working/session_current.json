@@ -1,0 +1,25 @@
+{
+  "session_id": "agent:job:auto_apply",
+  "started_at": "2026-03-30T10:15:49.279528",
+  "current_goal": "已完成并即时记录：求职 Agent smoke-dry-run 轮次",
+  "recent_messages": [
+    {
+      "role": "system",
+      "content": "求职 Agent 轮次 smoke-dry-run 已完成，report 已生成；apply_results=0，submitted=0，already_applied=0，failed=0，dry_run=0。",
+      "timestamp": "2026-03-30T10:16:14.658406"
+    }
+  ],
+  "active_entities": [
+    "jobs",
+    "auto-apply",
+    "smoke-dry-run"
+  ],
+  "scratchpad": "{\"round_name\": \"smoke-dry-run\", \"report_path\": \"C:\\\\Users\\\\TR\\\\.openclaw\\\\workspace\\\\qing-agent\\\\data\\\\auto_apply_reports\\\\auto_apply_smoke-dry-run_20260330_101614.json\", \"dry_run\": true, \"platform_summary\": {\"zhilian\": {\"品牌策划\": 0, \"品牌设计\": 0}, \"51job\": {\"品牌策划\": 0, \"品牌设计\": 0}, \"liepin\": {\"品牌策划\": 0, \"品牌设计\": 0}}, \"stats\": {\"history_count\": 0, \"success_count\": 0, \"failed_count\": 0, \"platforms\": {}}, \"apply_results\": []}",
+  "last_updated": "2026-03-30T10:16:14.658406",
+  "memory_guard": {
+    "critical_task_recorded": true,
+    "recorded_at": "2026-03-30T10:16:14.658406",
+    "title": "求职 Agent 轮次完成: smoke-dry-run",
+    "report_path": "C:\\Users\\TR\\.openclaw\\workspace\\qing-agent\\data\\auto_apply_reports\\auto_apply_smoke-dry-run_20260330_101614.json"
+  }
+}

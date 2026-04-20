@@ -1,0 +1,16 @@
+{
+  "name": "Memory Periodic Reflection",
+  "schedule": {
+    "kind": "every",
+    "everyMs": 21600000
+  },
+  "payload": {
+    "kind": "systemEvent",
+    "text": "run-memory-reflection"
+  },
+  "delivery": {
+    "mode": "none"
+  },
+  "sessionTarget": "main",
+  "enabled": true
+}

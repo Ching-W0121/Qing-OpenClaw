@@ -1,0 +1,16 @@
+﻿{
+    "kept":  "feishu/",
+    "reason":  "mobile-side integration retained; audit only",
+    "files":  [
+                  ".env",
+                  ".env.example",
+                  ".gitignore",
+                  "check_config.py",
+                  "feishu_bot.py",
+                  "QUICKSTART.md",
+                  "README.md",
+                  "requirements.txt",
+                  "SETUP_COMPLETE.md",
+                  "start.bat"
+              ]
+}
